@@ -25,10 +25,10 @@ async function saveCalculation(a, operator, b, result)
       ORDER BY id DESC
       OFFSET 50 LIMIT 1
     );
-  ');
+  `);
 }
 
-// Get last 20 calculations
+// Get last 50 calculations
 async function getHistory()
 {
   const result = await pool.query
