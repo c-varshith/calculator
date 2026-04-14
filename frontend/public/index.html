@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Calculator App</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+  <h1>🧮 Calculator</h1>
+
+  <div class="calculator">
+    <input id="a" type="number" placeholder="Enter first number">
+
+<select id="operator">
+  <option value="+">+</option>
+  <option value="-">-</option>
+  <option value="*">*</option>
+  <option value="/">/</option>
+</select>
+
+<input id="b" type="number" placeholder="Enter second number">
+
+<button onclick="calculate()">Calculate</button>
+
+  </div>
+
+  <h2>Result: <span id="result">-</span></h2>
+
+  <hr>
+
+  <h2>📜 History</h2>
+  <button onclick="clearHistory()">Clear History</button>
+
+  <ul id="history"></ul>
+
+  <script src="script.js"></script>
+
+</body>
+</html>

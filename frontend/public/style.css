@@ -1,0 +1,35 @@
+body
+{
+ font-family: Arial, sans-serif;
+ text-align: center;
+ margin-top: 50px;
+}
+
+.calculator
+{
+ margin-bottom: 20px;
+}
+
+input, select, button
+{
+ padding: 10px;
+ margin: 5px;
+ font-size: 16px;
+}
+
+button 
+{
+ cursor: pointer;
+}
+
+#history
+{
+ list-style: none;
+ padding: 0;
+ text-align: center;
+}
+
+#history li
+{
+ margin: 5px 0;
+}
