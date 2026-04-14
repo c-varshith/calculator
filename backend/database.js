@@ -17,6 +17,15 @@ async function saveCalculation(a, operator, b, result)
     'INSERT INTO history (a, operator, b, result) VALUES ($1, $2, $3, $4)',
     [a, operator, b, result]
   );
+  await pool.query
+  (`
+    DELETE FROM history
+    WHERE id < (
+      SELECT id FROM history
+      ORDER BY id DESC
+      OFFSET 50 LIMIT 1
+    );
+  ');
 }
 
 // Get last 20 calculations
