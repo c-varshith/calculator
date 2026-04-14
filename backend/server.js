@@ -13,7 +13,7 @@ app.use(cors());
 app.use(express.json());
 
 // Test route
-app.get('/api/history', (req, res) => {
+app.get('/', (req, res) => {
   res.send('Calculator Backend Running 🚀');
 });
 
