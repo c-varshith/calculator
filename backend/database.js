@@ -33,7 +33,7 @@ async function getHistory()
 {
   const result = await pool.query
   (
-    'SELECT * FROM history ORDER BY id DESC LIMIT 20'
+    'SELECT * FROM history ORDER BY id DESC LIMIT 50'
   );
   return result.rows;
 }
