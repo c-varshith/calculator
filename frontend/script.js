@@ -19,7 +19,7 @@ async function calculate()
 
 	document.getElementById('result').innerText = result;
 
-	const res = await fetch('https://calculator-c41x.onrender.com/api/history',
+	const res = await fetch('https://calculator-h2o4.onrender.com/api/history',
 	{
 		method: 'POST',
 		headers: {
@@ -35,7 +35,7 @@ async function calculate()
 
 async function loadHistory()
 {
-	const res = await fetch('https://calculator-c41x.onrender.com/api/history');
+	const res = await fetch('https://calculator-h2o4.onrender.com/api/history');
 	const data = await res.json();
 
 	const list = document.getElementById('history');
@@ -50,7 +50,7 @@ async function loadHistory()
 
 async function clearHistory()
 {
-	await fetch('https://calculator-c41x.onrender.com/api/history', {
+	await fetch('https://calculator-h2o4.onrender.com/api/history', {
 		method: 'DELETE'
 	});
 
