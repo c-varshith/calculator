@@ -1,11 +1,7 @@
 require('dotenv').config();
 const dns = require('dns');
 const { Pool } = require('pg');
-
-if (dns.setDefaultResultOrder)
-{
-  dns.setDefaultResultOrder('ipv4first');
-}
+const { URL } = require('url');
 
 if (!process.env.DATABASE_URL)
 {
@@ -13,29 +9,46 @@ if (!process.env.DATABASE_URL)
 }
 
 const useSsl = process.env.DATABASE_SSL !== 'false';
+let pool;
 
-const pool = new Pool
-({
-  connectionString: process.env.DATABASE_URL,
-  family: 4,
-  ...(useSsl
-    ? {
-        ssl: {
-          rejectUnauthorized: false,
-        },
-      }
-    : {})
-});
+async function getPool()
+{
+  if (pool)
+  {
+    return pool;
+  }
+
+  const databaseUrl = new URL(process.env.DATABASE_URL);
+  const resolvedHost = await dns.promises.lookup(databaseUrl.hostname, { family: 4 });
+
+  databaseUrl.hostname = resolvedHost.address;
+
+  pool = new Pool
+  ({
+    connectionString: databaseUrl.toString(),
+    ...(useSsl
+      ? {
+          ssl: {
+            rejectUnauthorized: false,
+          },
+        }
+      : {})
+  });
+
+  return pool;
+}
 
 // Save calculation
 async function saveCalculation(a, operator, b, result)
 {
-  await pool.query
+  const databasePool = await getPool();
+
+  await databasePool.query
   (
     'INSERT INTO history (a, operator, b, result) VALUES ($1, $2, $3, $4)',
     [a, operator, b, result]
   );
-  await pool.query
+  await databasePool.query
   (`
     DELETE FROM history
     WHERE id < (
@@ -49,7 +62,9 @@ async function saveCalculation(a, operator, b, result)
 // Get last 50 calculations
 async function getHistory()
 {
-  const result = await pool.query
+  const databasePool = await getPool();
+
+  const result = await databasePool.query
   (
     'SELECT * FROM history ORDER BY id DESC LIMIT 50'
   );
@@ -59,7 +74,9 @@ async function getHistory()
 // Clear history
 async function clearHistory()
 {
-  await pool.query('DELETE FROM history');
+  const databasePool = await getPool();
+
+  await databasePool.query('DELETE FROM history');
 }
 
 module.exports =
