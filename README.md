@@ -10,8 +10,8 @@ Live Demo: https://calculator-azure-six-37.vercel.app/
 ## Tech Stack
 - Frontend: HTML, CSS, JavaScript
 - Backend: Node.js, Express
-- Database: PostgreSQL
-- Deployment: Vercel + Supabase
+- Database: Supabase/PostgreSQL
+- Deployment: Vercel + Render
 
 ## Supabase migration
 1. Create a new Supabase project.
