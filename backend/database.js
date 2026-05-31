@@ -1,7 +1,5 @@
 require('dotenv').config();
-const dns = require('dns');
 const { Pool } = require('pg');
-const { URL } = require('url');
 
 if (!process.env.DATABASE_URL)
 {
@@ -9,46 +7,27 @@ if (!process.env.DATABASE_URL)
 }
 
 const useSsl = process.env.DATABASE_SSL !== 'false';
-let pool;
-
-async function getPool()
-{
-  if (pool)
-  {
-    return pool;
-  }
-
-  const databaseUrl = new URL(process.env.DATABASE_URL);
-  const resolvedHost = await dns.promises.lookup(databaseUrl.hostname, { family: 4 });
-
-  databaseUrl.hostname = resolvedHost.address;
-
-  pool = new Pool
-  ({
-    connectionString: databaseUrl.toString(),
-    ...(useSsl
-      ? {
-          ssl: {
-            rejectUnauthorized: false,
-          },
-        }
-      : {})
-  });
-
-  return pool;
-}
+const pool = new Pool
+({
+  connectionString: process.env.DATABASE_URL,
+  ...(useSsl
+    ? {
+        ssl: {
+          rejectUnauthorized: false,
+        },
+      }
+    : {})
+});
 
 // Save calculation
 async function saveCalculation(a, operator, b, result)
 {
-  const databasePool = await getPool();
-
-  await databasePool.query
+  await pool.query
   (
     'INSERT INTO history (a, operator, b, result) VALUES ($1, $2, $3, $4)',
     [a, operator, b, result]
   );
-  await databasePool.query
+  await pool.query
   (`
     DELETE FROM history
     WHERE id < (
@@ -62,9 +41,7 @@ async function saveCalculation(a, operator, b, result)
 // Get last 50 calculations
 async function getHistory()
 {
-  const databasePool = await getPool();
-
-  const result = await databasePool.query
+  const result = await pool.query
   (
     'SELECT * FROM history ORDER BY id DESC LIMIT 50'
   );
@@ -74,9 +51,7 @@ async function getHistory()
 // Clear history
 async function clearHistory()
 {
-  const databasePool = await getPool();
-
-  await databasePool.query('DELETE FROM history');
+  await pool.query('DELETE FROM history');
 }
 
 module.exports =
